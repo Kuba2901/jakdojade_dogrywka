@@ -229,7 +229,7 @@ CustomVector<BFSPoint *> Engine::getNeighbors(BFSPoint* origin) {
             neighbors.push_back(pt);
         }
 
-        delete testPoint;
+//        delete testPoint;
     }
 
     return neighbors;
@@ -266,7 +266,7 @@ void Engine::printNeighbors() {
 
 void Engine::getAtKey(CustomString key) {
     CityLinkedList *foundIndex = adjacencyList[key];
-    printf("FOUND CITY: %s\n", foundIndex->head->name.c_str());
+//    printf("FOUND CITY: %s\n", foundIndex->head->name.c_str());
 }
 
 void Engine::getFlights() {
@@ -288,22 +288,26 @@ void Engine::getFlights() {
 }
 
 
-void Engine::dijkstra(CustomString start, CustomString dest, int type) {
+KVPair<int, KVPair<int, CustomVector<int>>> Engine::dijkstra(CustomString start, CustomString dest, int type) {
     CustomPriorityQueue pq;
     CustomVector<int> distances;
     CustomVector<int> path;
 
-    int bufferSize = 1000000;
+    int bufferSize = this->adjacencyList.bucketCount;
+
+    const int MAX = 1000000000;
 
     int startIndex = start.toHash() % bufferSize;
     int destIndex = dest.toHash() % bufferSize;
 
-    distances.reserve(bufferSize);
-    path.reserve(bufferSize);
+//    printf("STARTING WITH: %d and ending at: %d\n", startIndex, destIndex);
+
+    distances.resize(this->adjacencyList.bucketCount);
+    path.resize(this->adjacencyList.bucketCount);
 
     for (int i = 0; i < bufferSize; ++i) {
-        distances[i] = INF;
-        path[i] = -10;
+        distances[i] = MAX;
+        path.push_back(-1);
     }
 
     distances[startIndex] = 0;
@@ -321,30 +325,38 @@ void Engine::dijkstra(CustomString start, CustomString dest, int type) {
 
         // Check whether the destination was reached
         if (tempIndex == destIndex) {
+//            printf("DESTINATION REACHED\n");
             // Return the distance to the destination and the path nodes indexes
-            return KVPair<int, CustomVector<int>>{distances[tempIndex], path};
+            return KVPair<int, KVPair<int, CustomVector<int>>> {distances[tempIndex], KVPair<int, CustomVector<int>> {tempIndex, path}};
         }
 
         if (distances[tempIndex] < temp.first) continue;
 
         // Get the current cities neighbors
-        CityLinkedList *cll = adjacencyList[tempIndex];
+        CityLinkedList *cll = &adjacencyList.buckets[tempIndex].cityLinkedList;
 
         // Pass the head (current city)
         CityNode *currentNode = cll->head->next;
+//        printf("City Node: %s\n", currentNode->name.c_str());
 
         // Search for neighbors
         while (currentNode != nullptr) {
             int neighborNodeIndex = currentNode->name.toHash() % this->adjacencyList.bucketCount;
             int neighborWeight = currentNode->weight;
 
-            if (distances[tempIndex] + neighborWeight >= distances[neighborNodeIndex] - 100) {
-                break;
+            if (distances[tempIndex] != INF && distances[neighborNodeIndex] > distances[tempIndex] + neighborWeight) {
+                distances[neighborNodeIndex] = distances[tempIndex]  + neighborWeight;
+                path[neighborNodeIndex] = tempIndex;
+//                printf("PUSHING CITY WITH INDEX: %d TO THE QUEUE!\n", neighborNodeIndex);
+                queue.push(KVPair<int, int>{distances[neighborNodeIndex], neighborNodeIndex});
             }
 
             currentNode = currentNode->next;
         }
     }
+
+    return KVPair<int, KVPair<int, CustomVector<int>>>();
+
 }
 
 
@@ -356,6 +368,40 @@ void Engine::sortNodes() {
 //    }
 }
 
-void Engine::translateCitiesToVector() {
+void Engine::printPath(KVPair<int, KVPair<int, CustomVector<int>>> result) {
+    CustomVector<int> path = result.second.second;
+    int counter = result.second.first;
+    CustomVector<CustomString> newPath;
+    while (counter != 0) {
+        if (counter != result.second.first) {
+            newPath.push_back(this->adjacencyList[counter]->head->name);
+        }
+        counter = result.second.second[counter];
+    }
+    for (int i = newPath.getSize() - 2; i >= 0; i--) {
+        std::cout << newPath[i].c_str() << " ";
+    }
+
+
+}
+
+void Engine::getQueries() {
+    int queriesCount;
+    std::cin >> queriesCount;
+
+    for (int i = 0; i < queriesCount; ++i) {
+        CustomString start, dest;
+        int type;
+
+        std::cin >> start >> dest >> type;
+
+        KVPair<int, KVPair<int, CustomVector<int>>> result = dijkstra(start, dest, type);
+
+        printf("%d ", result.first);
+
+        if (type == 1) printPath(result);
+
+        printf("\n");
+    }
 
 }

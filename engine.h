@@ -46,7 +46,8 @@ public:
     virtual void printNeighbors();
     virtual void getAtKey(CustomString key);
     virtual void getFlights();
-    virtual void dijkstra(CustomString source, CustomString dest, int type);
+    virtual KVPair<int, KVPair<int, CustomVector<int>>> dijkstra(CustomString start, CustomString dest, int type);
     virtual void sortNodes();
-    virtual void translateCitiesToVector();
+    virtual void printPath(KVPair<int, KVPair<int, CustomVector<int>>> result);
+    virtual void getQueries();
 };

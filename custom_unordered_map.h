@@ -9,7 +9,7 @@ public:
     CustomVector<KeyValue> buckets;
     size_t bucketCount;
 
-    CustomUnorderedMap(size_t size = 100) : bucketCount(size) {
+    CustomUnorderedMap(size_t size = 1000000) : bucketCount(size) {
         buckets.resize(size);
     }
 

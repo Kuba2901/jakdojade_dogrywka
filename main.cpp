@@ -6,10 +6,10 @@ int main()
     Engine *engine = new Engine();
 
     engine->getMap();
-    engine->getFlights();
     engine->findCities();
     engine->createAdjacencyMatrix();
-    engine->printNeighbors();
+    engine->getFlights();
+    engine->getQueries();
 
     return 0;
 }

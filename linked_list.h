@@ -60,7 +60,7 @@ public:
         CityNode* current = head;
         while (current != nullptr) {
             CityNode* next = current->next;
-            delete current;
+//            delete current;
             current = next;
         }
         head = nullptr;

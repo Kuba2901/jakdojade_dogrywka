@@ -37,7 +37,7 @@ public:
     // Copy constructor
     CustomString(const CustomString& other) : data(other.data) {}
 
-    // Move constructor
+    // Move constructora
     CustomString(CustomString&& other) noexcept : data(std::move(other.data)) {}
 
     // Destructor
