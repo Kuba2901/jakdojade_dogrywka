@@ -1,0 +1,47 @@
+#pragma once
+#include <iostream>
+#include "custom_vector.h"
+#include "point.h"
+#include "city.h"
+#include "custom_queue.h"
+#include "bfs_point.h"
+#include "linked_list.h"
+#include "custom_unordered_map.h"
+#include <limits>
+
+const int INF = std::numeric_limits<int>::max();
+
+class Engine
+{
+    // Map related
+    CustomVector<CustomVector<Point *>> map;
+    int height, width;
+
+    // Cities' locations
+    CustomVector<City *> cities;
+
+    // BFS map
+    CustomVector<CustomVector<BFSPoint *>> visitedFields;
+
+    // Adjacency list
+    CustomUnorderedMap adjacencyList;
+
+public:
+    Engine();
+    virtual void getMap();
+    virtual void printMap();
+    virtual void findCities();
+    virtual Point* findCityExit(int xBegin, int xEnd, int y);
+    virtual bool inBounds(Point* pt);
+    virtual void printCities();
+    virtual bool isTraversable(Point *pt);
+    virtual void createAdjacencyMatrix();
+    virtual CustomVector<BFSPoint *> getNeighbors(BFSPoint* point);
+    virtual City* findCity(Point *point);
+    virtual void resetVisited();
+    virtual void printNeighbors();
+    virtual void getAtKey(CustomString key);
+    virtual void getFlights();
+    virtual void dijkstra(CustomString source);
+    virtual void sortNodes();
+};
