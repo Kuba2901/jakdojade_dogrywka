@@ -289,21 +289,73 @@ void Engine::getFlights() {
 
 
 void Engine::dijkstra(CustomString start, CustomString dest, int type) {
-    // Initialize empty vector of visited nodes
-    CustomUnorderedMap visitedNodes;
+    CustomPriorityQueue pq;
+    CustomVector<int> distances;
+    CustomVector<int> path;
 
-    // Sort nodes
+    int bufferSize = 1000000;
 
+    int startIndex = start.toHash() % bufferSize;
+    int destIndex = dest.toHash() % bufferSize;
 
+    distances.reserve(bufferSize);
+    path.reserve(bufferSize);
 
+    for (int i = 0; i < bufferSize; ++i) {
+        distances[i] = INF;
+        path[i] = -10;
+    }
 
-}
+    distances[startIndex] = 0;
 
-void Engine::sortNodes() {
-    for (int i = 0; i < adjacencyList.bucketCount; ++i) {
-        if (adjacencyList.buckets[i].filled) {
+    CustomPriorityQueue queue;
+    queue.push(KVPair<int, int>{0, startIndex});
 
+    while (!queue.empty()) {
+        KVPair<int, int> temp = queue.top();
+
+        // Get the index of current pair
+        int tempIndex = temp.second;
+
+        queue.pop();
+
+        // Check whether the destination was reached
+        if (tempIndex == destIndex) {
+            // Return the distance to the destination and the path nodes indexes
+            return KVPair<int, CustomVector<int>>{distances[tempIndex], path};
+        }
+
+        if (distances[tempIndex] < temp.first) continue;
+
+        // Get the current cities neighbors
+        CityLinkedList *cll = adjacencyList[tempIndex];
+
+        // Pass the head (current city)
+        CityNode *currentNode = cll->head->next;
+
+        // Search for neighbors
+        while (currentNode != nullptr) {
+            int neighborNodeIndex = currentNode->name.toHash() % this->adjacencyList.bucketCount;
+            int neighborWeight = currentNode->weight;
+
+            if (distances[tempIndex] + neighborWeight >= distances[neighborNodeIndex] - 100) {
+                break;
+            }
+
+            currentNode = currentNode->next;
         }
     }
 }
 
+
+void Engine::sortNodes() {
+//    for (int i = 0; i < adjacencyList.bucketCount; ++i) {
+//        if (adjacencyList.buckets[i].filled) {
+//
+//        }
+//    }
+}
+
+void Engine::translateCitiesToVector() {
+
+}

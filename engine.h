@@ -4,6 +4,7 @@
 #include "point.h"
 #include "city.h"
 #include "custom_queue.h"
+#include "custom_priority_queue.h"
 #include "bfs_point.h"
 #include "linked_list.h"
 #include "custom_unordered_map.h"
@@ -26,6 +27,9 @@ class Engine
     // Adjacency list
     CustomUnorderedMap adjacencyList;
 
+    // Cities' vector indexes
+    CustomUnorderedMap citiesIndexes;
+
 public:
     Engine();
     virtual void getMap();
@@ -42,6 +46,7 @@ public:
     virtual void printNeighbors();
     virtual void getAtKey(CustomString key);
     virtual void getFlights();
-    virtual void dijkstra(CustomString source);
+    virtual void dijkstra(CustomString source, CustomString dest, int type);
     virtual void sortNodes();
+    virtual void translateCitiesToVector();
 };

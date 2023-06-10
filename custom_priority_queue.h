@@ -1,12 +1,12 @@
 #pragma once
 #include <iostream>
 #include "custom_vector.h"
+#include "dijkstra_kv.h"
 
-template <typename T>
 class CustomPriorityQueue
 {
 private:
-    CustomVector<T> data;
+    CustomVector<KVPair<int, int>> data;
 
 public:
     CustomPriorityQueue() {}
@@ -21,7 +21,7 @@ public:
         return data.getSize();
     }
 
-    const T& top() const
+    const KVPair<int, int>& top() const
     {
         if (empty())
         {
@@ -30,7 +30,7 @@ public:
         return data[0];
     }
 
-    void push(const T& value)
+    void push(const KVPair<int, int>& value)
     {
         data.push_back(value);
         siftUp(data.getSize() - 1);
@@ -54,7 +54,7 @@ private:
         while (index > 0)
         {
             size_t parentIndex = (index - 1) / 2;
-            if (data[index] < data[parentIndex])
+            if (data[index].second < data[parentIndex].second)
             {
                 std::swap(data[index], data[parentIndex]);
                 index = parentIndex;
@@ -72,12 +72,12 @@ private:
         size_t rightChildIndex = 2 * index + 2;
         size_t smallestIndex = index;
 
-        if (leftChildIndex < data.getSize() && data[leftChildIndex] < data[smallestIndex])
+        if (leftChildIndex < data.getSize() && data[leftChildIndex].second < data[smallestIndex].second)
         {
             smallestIndex = leftChildIndex;
         }
 
-        if (rightChildIndex < data.getSize() && data[rightChildIndex] < data[smallestIndex])
+        if (rightChildIndex < data.getSize() && data[rightChildIndex].second < data[smallestIndex].second)
         {
             smallestIndex = rightChildIndex;
         }
