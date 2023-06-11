@@ -8,8 +8,8 @@ void Engine::getMap()
 {
     // Getting map dimensions
     int height_, width_;
-//    scanf("%d %d", &width_, &height_);
-    std::cin >> width_ >> height_;
+    scanf("%d %d", &width_, &height_);
+//    std::cin >> width_ >> height_;
 
     // Setting engine properties
     this->height = height_;
