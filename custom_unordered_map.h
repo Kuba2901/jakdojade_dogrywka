@@ -9,7 +9,8 @@ public:
     JakDojadeVector<KeyValue> buckets;
     size_t bucketCount;
 
-    JakDojadeHashMap(size_t size = 1000000) : bucketCount(size) {
+    JakDojadeHashMap(size_t size = 100000) : bucketCount(size) {
+        bucketCount = size;
         buckets.resizeVector(size);
     }
 

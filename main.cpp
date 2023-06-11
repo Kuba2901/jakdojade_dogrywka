@@ -9,9 +9,6 @@ int main()
     engine->findCities();
     engine->createAdjacencyMatrix();
     engine->getFlights();
-//    engine->printNeighbors();
     engine->getQueries();
-    engine->printNeighbors();
-
     return 0;
 }

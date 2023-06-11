@@ -8,6 +8,7 @@ void Engine::getMap()
 {
     // Getting map dimensions
     int height_, width_;
+//    scanf("%d %d", &width_, &height_);
     std::cin >> width_ >> height_;
 
     // Setting engine properties
@@ -103,18 +104,18 @@ Point* Engine::findCityExit(int xBegin, int xEnd, int y) {
     // Above the name
     for (int i = xBegin - 1; i <= xEnd; ++i) {
         Point *pt = new Point(i, y - 1, ' ');
+        int ptX = pt->x;
+        int ptY = pt->y;
 
         // Only proceed if the point is in bounds
         if (inBounds(pt)) {
-            // Swap the character if in bounds
-            pt = this->map[pt->y][pt->x];
+            // Delete the test point
+            delete pt;
 
-            if (pt->c == '*') {
-                return pt;
+            if (this->map[ptY][ptX]->c == '*') {
+                return this->map[ptY][ptX];
             }
         }
-
-        delete pt;
     }
 
     // On the level of the name
@@ -149,18 +150,18 @@ Point* Engine::findCityExit(int xBegin, int xEnd, int y) {
     // Below the name
     for (int i = xBegin - 1; i <= xEnd; ++i) {
         Point *pt = new Point(i, y + 1, ' ');
+        int ptX = pt->x;
+        int ptY = pt->y;
 
         // Only proceed if the point is in bounds
         if (inBounds(pt)) {
-            // Swap the character if in bounds
-            pt = this->map[pt->y][pt->x];
+            // Delete the test point
+            delete pt;
 
-            if (pt->c == '*') {
-                return pt;
+            if (this->map[ptY][ptX]->c == '*') {
+                return this->map[ptY][ptX];
             }
         }
-
-        delete pt;
     }
 
     return nullptr;
@@ -415,7 +416,7 @@ void Engine::printPath(KVPair<int, KVPair<int, JakDojadeVector<int>>> result) {
         counter = result.second.second[counter];
     }
     for (int i = newPath.getSize() - 2; i >= 0; i--) {
-        std::cout << newPath[i].CStyle() << " ";
+        printf("%s ", newPath[i].CStyle());
     }
 }
 
