@@ -55,6 +55,7 @@ void Engine::findCities() {
         for (int x = 0; x < this->width; ++x) {
             Point *pt = this->map[y][x];
 
+            // TODO: DOESNT ACCEPT NEXT TO RIGHT BORDER
             if (pt->c >= 65 && pt->c <= 90) {
                 // Start counting if not already
                 if (!nameFound) {
@@ -65,6 +66,20 @@ void Engine::findCities() {
                 }
 
                 nameFound = true;
+
+                if (x + 1 == width) {
+                    xEnd = x;
+
+                    // Find the city exit
+                    Point *exit = findCityExit(xBegin, xEnd, y);
+                    this->cities.push_back(new City(cityName, exit));
+
+                    cityName.clear();
+                    xBegin = -1;
+                    xEnd = -1;
+
+                    nameFound = false;
+                }
             } else {
                 if (nameFound) {
                     xEnd = x;
@@ -86,7 +101,7 @@ void Engine::findCities() {
 
 Point* Engine::findCityExit(int xBegin, int xEnd, int y) {
     // Above the name
-    for (int i = xBegin - 1; i < xEnd + 1; ++i) {
+    for (int i = xBegin - 1; i <= xEnd; ++i) {
         Point *pt = new Point(i, y - 1, ' ');
 
         // Only proceed if the point is in bounds
@@ -102,17 +117,21 @@ Point* Engine::findCityExit(int xBegin, int xEnd, int y) {
 
     // On the level of the name
     Point *before = new Point(xBegin - 1, y, ' ');
-    Point *after = new Point(xEnd + 1, y, ' ');
+    Point *after = new Point(xEnd, y, ' ');
 
     if (inBounds(before)) {
-        if (map[before->y][before->x]->c == '*') return map[before->y][before->x];
+        if (map[before->y][before->x]->c == '*') {
+            return map[before->y][before->x];
+        }
     }
-    else if (inBounds(after)) {
-        if (map[after->y][after->x]->c == '*') return map[after->y][after->x];
+    if (inBounds(after)) {
+        if (map[after->y][after->x]->c == '*') {
+            return map[after->y][after->x];
+        }
     }
 
     // Below the name
-    for (int i = xBegin - 1; i < xEnd + 1; ++i) {
+    for (int i = xBegin - 1; i <= xEnd; ++i) {
         Point *pt = new Point(i, y + 1, ' ');
 
         // Only proceed if the point is in bounds
@@ -184,10 +203,13 @@ void Engine::createAdjacencyMatrix() {
             BFSPoint *front = queue.front();
             queue.pop();
 
-            if (front->point->c == '*' && (front->point->x != firstCity->point->x && front->point->y != firstCity->point->y)) {
+            if (front->point->c == '*' && !(front->point->x == firstCity->point->x && front->point->y == firstCity->point->y)) {
                 City* city = findCity(front->point);
-                cityEncountered = true;
-                cityNeighbors->append(new CityNode(city->name, front->distance));
+
+                if (city != nullptr) {
+                    cityEncountered = true;
+                    cityNeighbors->append(new CityNode(city->name, front->distance));
+                }
             }
 
             if (!cityEncountered) {
@@ -264,24 +286,20 @@ void Engine::printNeighbors() {
     }
 }
 
-void Engine::getAtKey(CustomString key) {
-    CityLinkedList *foundIndex = adjacencyList[key];
-//    printf("FOUND CITY: %s\n", foundIndex->head->name.c_str());
-}
 
 void Engine::getFlights() {
     int flightsNum;
     std::cin >> flightsNum;
 
     for (int i = 0; i < flightsNum; ++i) {
-        CustomString start;
-        CustomString dest;
+        char* start;
+        char* dest;
         int time;
 
         std::cin >> start >> dest >> time;
 
         // Push to the adjacency list
-        adjacencyList[start]->append(new CityNode(dest, time));
+        adjacencyList[CustomString{start}]->append(new CityNode(CustomString{dest}, time));
     }
 
 //    printf("NUMBER OF FLiGHTS: %d\n", flightsNum);
@@ -360,14 +378,6 @@ KVPair<int, KVPair<int, CustomVector<int>>> Engine::dijkstra(CustomString start,
 }
 
 
-void Engine::sortNodes() {
-//    for (int i = 0; i < adjacencyList.bucketCount; ++i) {
-//        if (adjacencyList.buckets[i].filled) {
-//
-//        }
-//    }
-}
-
 void Engine::printPath(KVPair<int, KVPair<int, CustomVector<int>>> result) {
     CustomVector<int> path = result.second.second;
     int counter = result.second.first;
@@ -381,8 +391,6 @@ void Engine::printPath(KVPair<int, KVPair<int, CustomVector<int>>> result) {
     for (int i = newPath.getSize() - 2; i >= 0; i--) {
         std::cout << newPath[i].c_str() << " ";
     }
-
-
 }
 
 void Engine::getQueries() {

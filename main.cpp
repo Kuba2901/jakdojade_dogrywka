@@ -7,7 +7,11 @@ int main()
 
     engine->getMap();
     engine->findCities();
+
+//    engine->printCities();
+
     engine->createAdjacencyMatrix();
+//    engine->printNeighbors();
     engine->getFlights();
     engine->getQueries();
 

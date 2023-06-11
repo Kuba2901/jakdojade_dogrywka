@@ -44,10 +44,8 @@ public:
     virtual City* findCity(Point *point);
     virtual void resetVisited();
     virtual void printNeighbors();
-    virtual void getAtKey(CustomString key);
     virtual void getFlights();
     virtual KVPair<int, KVPair<int, CustomVector<int>>> dijkstra(CustomString start, CustomString dest, int type);
-    virtual void sortNodes();
     virtual void printPath(KVPair<int, KVPair<int, CustomVector<int>>> result);
     virtual void getQueries();
 };

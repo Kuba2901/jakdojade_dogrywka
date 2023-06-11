@@ -9,10 +9,6 @@ private:
     CustomVector<T> data;
 
 public:
-    CustomQueue() = default;
-
-    ~CustomQueue() = default;
-
     void push(const T& value)
     {
         data.push_back(value);

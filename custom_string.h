@@ -35,7 +35,15 @@ public:
     }
 
     // Copy constructor
-    CustomString(const CustomString& other) : data(other.data) {}
+    CustomString(const CustomString& other) {
+        data.resize(other.length());
+
+        for (int i = 0; i < data.getSize(); ++i) {
+            this->data[i] = other[i];
+        }
+
+    }
+
 
     // Move constructora
     CustomString(CustomString&& other) noexcept : data(std::move(other.data)) {}
@@ -100,9 +108,11 @@ public:
     }
 
     void clear() {
-        for (int i = 0; i < this->data.getSize(); ++i) {
-            this->data.pop_back();
+        while (data.getSize() > 0) {
+            data.pop_back();
         }
+
+        data.pop_back();
     }
 
     size_t toHash()
@@ -111,9 +121,10 @@ public:
         size_t prime = 31;  // A prime number used for better distribution
 
         for (int i = 0; i < this->data.getSize(); ++i) {
-            hash ^= (this->data[i] + prime);
+            hash = hash * prime + static_cast<size_t>(data[i]);
         }
 
         return hash;
+
     }
 };
