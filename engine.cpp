@@ -8,8 +8,9 @@ void Engine::getMap()
 {
     // Getting map dimensions
     int height_, width_;
-    scanf("%d %d", &width_, &height_);
-//    std::cin >> width_ >> height_;
+//    scanf("%d %d", &width_, &height_);
+    std::cin >> width_ >> height_;
+
 
     // Setting engine properties
     this->height = height_;
@@ -25,6 +26,7 @@ void Engine::getMap()
         for (size_t x = 0; x < width_; x++)
         {
             std::cin >> c;
+//            scanf("%c", &c);
             row.pushToVector(new Point(x, y, c));
         }
 
@@ -56,8 +58,7 @@ void Engine::findCities() {
         for (int x = 0; x < this->width; ++x) {
             Point *pt = this->map[y][x];
 
-            // TODO: DOESNT ACCEPT NEXT TO RIGHT BORDER
-            if (pt->c >= 65 && pt->c <= 90) {
+            if ((pt->c >= 65 && pt->c <= 90) || (pt->c - '0' >= 0 && pt->c - '0' <= 9)) {
                 // Start counting if not already
                 if (!nameFound) {
                     xBegin = x;
@@ -318,6 +319,7 @@ void Engine::printNeighbors() {
 void Engine::getFlights() {
     int flightsNum;
     std::cin >> flightsNum;
+//    scanf("%d", &flightsNum);
 
     for (int i = 0; i < flightsNum; ++i) {
         JakDojadeString start, dest;
@@ -423,6 +425,7 @@ void Engine::printPath(KVPair<int, KVPair<int, JakDojadeVector<int>>> result) {
 void Engine::getQueries() {
     int queriesCount;
     std::cin >> queriesCount;
+//    scanf("%d", &queriesCount);
 
     for (int i = 0; i < queriesCount; ++i) {
         JakDojadeString start, dest;
