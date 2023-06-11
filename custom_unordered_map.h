@@ -4,13 +4,13 @@
 #include "linked_list_node.h"
 #include "key_value.h"
 
-class CustomUnorderedMap {
+class JakDojadeHashMap {
 public:
-    CustomVector<KeyValue> buckets;
+    JakDojadeVector<KeyValue> buckets;
     size_t bucketCount;
 
-    CustomUnorderedMap(size_t size = 1000000) : bucketCount(size) {
-        buckets.resize(size);
+    JakDojadeHashMap(size_t size = 1000000) : bucketCount(size) {
+        buckets.resizeVector(size);
     }
 
     void insertList(CityLinkedList* list) {
@@ -25,7 +25,6 @@ public:
         }
 
         buckets[index].filled = true;
-//        printf("INSERING CITY(%s) AT INDEX: %d\n", list->head->name.c_str(), index);
     }
 
     // Insert a key-value pair into the hashmap
@@ -36,8 +35,7 @@ public:
 
         // Node was not found
         if (foundNode != nullptr) {
-            printf("FOUND\n");
-            // Update weight if greater than found
+            // Update weight if smaller than found
             if (foundNode->weight > node->weight) {
                 foundNode->weight = node->weight;
             }
@@ -45,12 +43,11 @@ public:
             return;
         }
 
-        // If the key doesn't exist, insert a new key-value pair
         buckets[index].cityLinkedList.append(node);
     }
 
     // Retrieve the value associated with a given key
-    CityLinkedList* operator[](CustomString key) {
+    CityLinkedList* operator[](JakDojadeString key) {
         size_t index = key.toHash() % bucketCount;
 
         return &buckets[index].cityLinkedList;

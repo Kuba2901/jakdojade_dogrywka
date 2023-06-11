@@ -20,14 +20,14 @@ void Engine::getMap()
     // Getting the map
     for (size_t y = 0; y < height_; y++)
     {
-        CustomVector<Point *> row;
+        JakDojadeVector<Point *> row;
         for (size_t x = 0; x < width_; x++)
         {
             std::cin >> c;
-            row.push_back(new Point(x, y, c));
+            row.pushToVector(new Point(x, y, c));
         }
 
-        this->map.push_back(row);
+        this->map.pushToVector(row);
     }
 }
 
@@ -50,7 +50,7 @@ void Engine::findCities() {
         int xEnd = -1;
 
         bool nameFound = false;
-        CustomString cityName;
+        JakDojadeString cityName;
 
         for (int x = 0; x < this->width; ++x) {
             Point *pt = this->map[y][x];
@@ -72,7 +72,7 @@ void Engine::findCities() {
 
                     // Find the city exit
                     Point *exit = findCityExit(xBegin, xEnd, y);
-                    this->cities.push_back(new City(cityName, exit));
+                    this->cities.pushToVector(new City(cityName, exit));
 
                     cityName.clear();
                     xBegin = -1;
@@ -86,7 +86,7 @@ void Engine::findCities() {
 
                     // Find the city exit
                     Point *exit = findCityExit(xBegin, xEnd, y);
-                    this->cities.push_back(new City(cityName, exit));
+                    this->cities.pushToVector(new City(cityName, exit));
 
                     cityName.clear();
                     xBegin = -1;
@@ -113,6 +113,8 @@ Point* Engine::findCityExit(int xBegin, int xEnd, int y) {
                 return pt;
             }
         }
+
+        delete pt;
     }
 
     // On the level of the name
@@ -121,12 +123,26 @@ Point* Engine::findCityExit(int xBegin, int xEnd, int y) {
 
     if (inBounds(before)) {
         if (map[before->y][before->x]->c == '*') {
-            return map[before->y][before->x];
+            int beforeY = before->y;
+            int beforeX = before->x  ;
+
+            // Deallocate memory
+            delete before;
+
+            // Return the right pt
+            return map[beforeY][beforeX];
         }
     }
     if (inBounds(after)) {
         if (map[after->y][after->x]->c == '*') {
-            return map[after->y][after->x];
+            int afterY = after->y;
+            int afterX = after->x  ;
+
+            // Deallocate memory
+            delete after;
+
+            // return found point
+            return map[afterY][afterX];
         }
     }
 
@@ -143,7 +159,11 @@ Point* Engine::findCityExit(int xBegin, int xEnd, int y) {
                 return pt;
             }
         }
+
+        delete pt;
     }
+
+    return nullptr;
 }
 
 bool Engine::inBounds(Point* pt) {
@@ -154,7 +174,7 @@ void Engine::printCities() {
     for (int i = 0; i < this->cities.getSize(); ++i) {
         City *city = this->cities[i];
         Point *exit = city->point;
-        printf("City: %s at (%d, %d)!\n", city->name.c_str(), exit->x, exit->y);
+        printf("City: %s at (%d, %d)!\n", city->name.CStyle(), exit->x, exit->y);
     }
 }
 
@@ -167,16 +187,16 @@ bool Engine::isTraversable(Point *pt) {
 void Engine::createAdjacencyMatrix() {
     // Keep track of visited fields
     for (int y = 0; y < this->height; ++y) {
-        CustomVector<BFSPoint *> row;
+        JakDojadeVector<BFSPoint *> row;
 
         for (int x = 0; x < this->width; ++x) {
-            row.push_back(new BFSPoint(this->map[y][x], 0, false));
+            row.pushToVector(new BFSPoint(this->map[y][x], 0, false));
         }
 
-        visitedFields.push_back(row);
+        visitedFields.pushToVector(row);
     }
 
-    CustomQueue<BFSPoint*> queue;
+    JakDojadeQueue<BFSPoint*> queue;
 
     // Get neighbors of each city
     for (int cityNum = 0; cityNum < this->cities.getSize(); ++cityNum) {
@@ -193,15 +213,15 @@ void Engine::createAdjacencyMatrix() {
         visitedFields[firstCity->point->y][firstCity->point->x]->visited = true;
 
         // Push the first city to the queue
-        queue.push(visitedFields[firstCity->point->y][firstCity->point->x]);
+        queue.pushToQueue(visitedFields[firstCity->point->y][firstCity->point->x]);
 
-        while (!queue.empty()) {
+        while (!queue.queueEmpty()) {
             // Check whether a city was encountered in the current move
             bool cityEncountered = false;
 
             // Dequeue a vertex from queue and print it
-            BFSPoint *front = queue.front();
-            queue.pop();
+            BFSPoint *front = queue.getFront();
+            queue.popFromTheQueue();
 
             if (front->point->c == '*' && !(front->point->x == firstCity->point->x && front->point->y == firstCity->point->y)) {
                 City* city = findCity(front->point);
@@ -214,13 +234,13 @@ void Engine::createAdjacencyMatrix() {
 
             if (!cityEncountered) {
                 // Get current point's neighbors
-                CustomVector<BFSPoint *> neighbors = getNeighbors(front);
+                JakDojadeVector<BFSPoint *> neighbors = getNeighbors(front);
 
                 for (int i = 0; i < neighbors.getSize(); ++i) {
                     // Get all adjacent vertices of the dequeued
                     if (!neighbors[i]->visited) {
                         neighbors[i]->visited = true;
-                        queue.push(neighbors[i]);
+                        queue.pushToQueue(neighbors[i]);
                     }
                 }
             }
@@ -229,10 +249,17 @@ void Engine::createAdjacencyMatrix() {
 
         adjacencyList.insertList(cityNeighbors);
     }
+
+    // Deallocate visited fields board
+    for (int y = 0; y < this->height; ++y) {
+        for (int x = 0; x < this->width; ++x) {
+            delete visitedFields[y][x];
+        }
+    }
 }
 
-CustomVector<BFSPoint *> Engine::getNeighbors(BFSPoint* origin) {
-    CustomVector<BFSPoint *> neighbors;
+JakDojadeVector<BFSPoint *> Engine::getNeighbors(BFSPoint* origin) {
+    JakDojadeVector<BFSPoint *> neighbors;
 
     const int dx[] = {0, 0, -1, 1};
     const int dy[] = {-1, 1, 0, 0};
@@ -248,10 +275,10 @@ CustomVector<BFSPoint *> Engine::getNeighbors(BFSPoint* origin) {
             BFSPoint *pt = this->visitedFields[currY][currX];
             pt->distance = origin->distance + 1;
 //            printf("FOUND NEIGHBOR: (%d, %d, %c)\n", pt->point->x, pt->point->y, pt->point->c);
-            neighbors.push_back(pt);
+            neighbors.pushToVector(pt);
         }
 
-//        delete testPoint;
+        delete testPoint;
     }
 
     return neighbors;
@@ -292,40 +319,39 @@ void Engine::getFlights() {
     std::cin >> flightsNum;
 
     for (int i = 0; i < flightsNum; ++i) {
-        char* start;
-        char* dest;
+        JakDojadeString start, dest;
         int time;
 
         std::cin >> start >> dest >> time;
 
         // Push to the adjacency list
-        adjacencyList[CustomString{start}]->append(new CityNode(CustomString{dest}, time));
+        adjacencyList[JakDojadeString{start}]->append(new CityNode(JakDojadeString{dest}, time));
     }
 
 //    printf("NUMBER OF FLiGHTS: %d\n", flightsNum);
 }
 
 
-KVPair<int, KVPair<int, CustomVector<int>>> Engine::dijkstra(CustomString start, CustomString dest, int type) {
+KVPair<int, KVPair<int, JakDojadeVector<int>>> Engine::dijkstra(JakDojadeString start, JakDojadeString dest, int type) {
     CustomPriorityQueue pq;
-    CustomVector<int> distances;
-    CustomVector<int> path;
+    JakDojadeVector<int> distances;
+    JakDojadeVector<int> path;
 
     int bufferSize = this->adjacencyList.bucketCount;
 
-    const int MAX = 1000000000;
+    const int MAX = 10000000;
 
     int startIndex = start.toHash() % bufferSize;
     int destIndex = dest.toHash() % bufferSize;
 
 //    printf("STARTING WITH: %d and ending at: %d\n", startIndex, destIndex);
 
-    distances.resize(this->adjacencyList.bucketCount);
-    path.resize(this->adjacencyList.bucketCount);
+    distances.resizeVector(this->adjacencyList.bucketCount);
+    path.resizeVector(this->adjacencyList.bucketCount);
 
     for (int i = 0; i < bufferSize; ++i) {
         distances[i] = MAX;
-        path.push_back(-1);
+        path.pushToVector(-1);
     }
 
     distances[startIndex] = 0;
@@ -345,7 +371,7 @@ KVPair<int, KVPair<int, CustomVector<int>>> Engine::dijkstra(CustomString start,
         if (tempIndex == destIndex) {
 //            printf("DESTINATION REACHED\n");
             // Return the distance to the destination and the path nodes indexes
-            return KVPair<int, KVPair<int, CustomVector<int>>> {distances[tempIndex], KVPair<int, CustomVector<int>> {tempIndex, path}};
+            return KVPair<int, KVPair<int, JakDojadeVector<int>>> {distances[tempIndex], KVPair<int, JakDojadeVector<int>> {tempIndex, path}};
         }
 
         if (distances[tempIndex] < temp.first) continue;
@@ -355,7 +381,7 @@ KVPair<int, KVPair<int, CustomVector<int>>> Engine::dijkstra(CustomString start,
 
         // Pass the head (current city)
         CityNode *currentNode = cll->head->next;
-//        printf("City Node: %s\n", currentNode->name.c_str());
+//        printf("City Node: %s\n", currentNode->name.CStyle());
 
         // Search for neighbors
         while (currentNode != nullptr) {
@@ -373,23 +399,23 @@ KVPair<int, KVPair<int, CustomVector<int>>> Engine::dijkstra(CustomString start,
         }
     }
 
-    return KVPair<int, KVPair<int, CustomVector<int>>>();
+    return KVPair<int, KVPair<int, JakDojadeVector<int>>>();
 
 }
 
 
-void Engine::printPath(KVPair<int, KVPair<int, CustomVector<int>>> result) {
-    CustomVector<int> path = result.second.second;
+void Engine::printPath(KVPair<int, KVPair<int, JakDojadeVector<int>>> result) {
+    JakDojadeVector<int> path = result.second.second;
     int counter = result.second.first;
-    CustomVector<CustomString> newPath;
+    JakDojadeVector<JakDojadeString> newPath;
     while (counter != 0) {
         if (counter != result.second.first) {
-            newPath.push_back(this->adjacencyList[counter]->head->name);
+            newPath.pushToVector(this->adjacencyList[counter]->head->name);
         }
         counter = result.second.second[counter];
     }
     for (int i = newPath.getSize() - 2; i >= 0; i--) {
-        std::cout << newPath[i].c_str() << " ";
+        std::cout << newPath[i].CStyle() << " ";
     }
 }
 
@@ -398,12 +424,12 @@ void Engine::getQueries() {
     std::cin >> queriesCount;
 
     for (int i = 0; i < queriesCount; ++i) {
-        CustomString start, dest;
+        JakDojadeString start, dest;
         int type;
 
         std::cin >> start >> dest >> type;
 
-        KVPair<int, KVPair<int, CustomVector<int>>> result = dijkstra(start, dest, type);
+        KVPair<int, KVPair<int, JakDojadeVector<int>>> result = dijkstra(start, dest, type);
 
         printf("%d ", result.first);
 

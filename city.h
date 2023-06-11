@@ -4,8 +4,8 @@
 
 struct City
 {
-    CustomString name;
+    JakDojadeString name;
     Point *point;
 
-    City(CustomString name_, Point *point_): name(name_), point(point_) {}
+    City(JakDojadeString name_, Point *point_): name(name_), point(point_) {}
 };

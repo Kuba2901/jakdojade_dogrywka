@@ -6,7 +6,7 @@
 class CustomPriorityQueue
 {
 private:
-    CustomVector<KVPair<int, int>> data;
+    JakDojadeVector<KVPair<int, int>> data;
 
 public:
     CustomPriorityQueue() {}
@@ -25,14 +25,14 @@ public:
     {
         if (empty())
         {
-            throw std::out_of_range("Priority queue is empty");
+            throw std::out_of_range("Priority queue is queueEmpty");
         }
         return data[0];
     }
 
     void push(const KVPair<int, int>& value)
     {
-        data.push_back(value);
+        data.pushToVector(value);
         siftUp(data.getSize() - 1);
     }
 
@@ -40,11 +40,11 @@ public:
     {
         if (empty())
         {
-            throw std::out_of_range("Priority queue is empty");
+            throw std::out_of_range("Priority queue is queueEmpty");
         }
 
         std::swap(data[0], data[data.getSize() - 1]);
-        data.pop_back();
+        data.popBackVector();
         siftDown(0);
     }
 

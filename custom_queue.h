@@ -3,49 +3,36 @@
 
 
 template <typename T>
-class CustomQueue
+class JakDojadeQueue
 {
 private:
-    CustomVector<T> data;
+    JakDojadeVector<T> data;
 
 public:
-    void push(const T& value)
+    void pushToQueue(const T& value)
     {
-        data.push_back(value);
+        data.pushToVector(value);
     }
 
-    void pop()
+    void popFromTheQueue()
     {
-        if (!empty())
+        if (!queueEmpty())
         {
-            data.pop_front();
+            data.popFrontVector();
         }
     }
 
-    T& front()
+    T& getFront()
     {
-        if (empty())
-        {
-            throw std::out_of_range("Queue is empty");
-        }
         return data[0];
     }
 
-    const T& front() const
-    {
-        if (empty())
-        {
-            throw std::out_of_range("Queue is empty");
-        }
-        return data[0];
-    }
-
-    bool empty() const
+    bool queueEmpty() const
     {
         return data.getSize() == 0;
     }
 
-    size_t size() const
+    size_t getSize() const
     {
         return data.getSize();
     }

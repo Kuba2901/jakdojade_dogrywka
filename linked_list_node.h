@@ -4,9 +4,9 @@
 
 class CityNode {
 public:
-    CustomString name;
+    JakDojadeString name;
     int weight;
     CityNode* next;
 
-    CityNode(CustomString name_, int weight_) : name(name_), weight(weight_), next(nullptr) {}
+    CityNode(JakDojadeString name_, int weight_) : name(name_), weight(weight_), next(nullptr) {}
 };

@@ -9,26 +9,27 @@
 #include "linked_list.h"
 #include "custom_unordered_map.h"
 #include <limits>
+#include <cstring>
 
 const int INF = std::numeric_limits<int>::max();
 
 class Engine
 {
     // Map related
-    CustomVector<CustomVector<Point *>> map;
+    JakDojadeVector<JakDojadeVector<Point *>> map;
     int height, width;
 
     // Cities' locations
-    CustomVector<City *> cities;
+    JakDojadeVector<City *> cities;
 
     // BFS map
-    CustomVector<CustomVector<BFSPoint *>> visitedFields;
+    JakDojadeVector<JakDojadeVector<BFSPoint *>> visitedFields;
 
     // Adjacency list
-    CustomUnorderedMap adjacencyList;
+    JakDojadeHashMap adjacencyList;
 
     // Cities' vector indexes
-    CustomUnorderedMap citiesIndexes;
+    JakDojadeHashMap citiesIndexes;
 
 public:
     Engine();
@@ -40,12 +41,12 @@ public:
     virtual void printCities();
     virtual bool isTraversable(Point *pt);
     virtual void createAdjacencyMatrix();
-    virtual CustomVector<BFSPoint *> getNeighbors(BFSPoint* point);
+    virtual JakDojadeVector<BFSPoint *> getNeighbors(BFSPoint* point);
     virtual City* findCity(Point *point);
     virtual void resetVisited();
     virtual void printNeighbors();
     virtual void getFlights();
-    virtual KVPair<int, KVPair<int, CustomVector<int>>> dijkstra(CustomString start, CustomString dest, int type);
-    virtual void printPath(KVPair<int, KVPair<int, CustomVector<int>>> result);
+    virtual KVPair<int, KVPair<int, JakDojadeVector<int>>> dijkstra(JakDojadeString start, JakDojadeString dest, int type);
+    virtual void printPath(KVPair<int, KVPair<int, JakDojadeVector<int>>> result);
     virtual void getQueries();
 };

@@ -1,42 +1,48 @@
 #pragma once
 #include "custom_vector.h"
 
-class CustomString
+class JakDojadeString
 {
 
 private:
-    CustomVector<char> data;
+    JakDojadeVector<char> data;
 
-    friend std::istream& operator>>(std::istream& input, CustomString& customString)
+    friend std::istream& operator>>(std::istream& input, JakDojadeString& customString)
     {
-        std::string temp;
-        input >> temp;
-        customString = CustomString(temp.c_str());
+        size_t bufferSize = 100;
+
+        char* buffer = new char[bufferSize];
+        input >> buffer;
+
+        customString = JakDojadeString(buffer);
+
+        delete[] buffer; // Deallocate the dynamically allocated memory
+
         return input;
     }
 
 public:
     // Default constructor
-    CustomString() = default;
+    JakDojadeString() = default;
 
     // Constructor with a C-style string
-    CustomString(const char* str)
+    JakDojadeString(const char* str)
     {
         size_t length = 0;
         while (str[length] != '\0')
         {
             ++length;
         }
-        data.reserve(length);
+        data.reserveCapacity(length);
         for (size_t i = 0; i < length; ++i)
         {
-            data.push_back(str[i]);
+            data.pushToVector(str[i]);
         }
     }
 
     // Copy constructor
-    CustomString(const CustomString& other) {
-        data.resize(other.length());
+    JakDojadeString(const JakDojadeString& other) {
+        data.resizeVector(other.length());
 
         for (int i = 0; i < data.getSize(); ++i) {
             this->data[i] = other[i];
@@ -44,15 +50,8 @@ public:
 
     }
 
-
-    // Move constructora
-    CustomString(CustomString&& other) noexcept : data(std::move(other.data)) {}
-
-    // Destructor
-    ~CustomString() {}
-
     // Assignment operator
-    CustomString& operator=(const CustomString& other)
+    JakDojadeString& operator=(const JakDojadeString& other)
     {
         if (this != &other)
         {
@@ -62,7 +61,7 @@ public:
     }
 
     // Move assignment operator
-    CustomString& operator=(CustomString&& other) noexcept
+    JakDojadeString& operator=(JakDojadeString&& other) noexcept
     {
         if (this != &other)
         {
@@ -90,29 +89,31 @@ public:
     }
 
     // Convert the string to a C-style string
-    const char* c_str()
+    const char* CStyle()
     {
-        // Add a null terminator to the end of the CustomVector data
-        data.push_back('\0');
+        // Add a null terminator to the end of the JakDojadeString data
+        data.pushToVector('\0');
+
         // Get the pointer to the data and remove the null terminator
         const char* str = data.getData();
-        data.pop_back();
+
+        data.popBackVector();
         return str;
     }
 
     // Append a single character to the current string
-    CustomString& append(char ch)
+    JakDojadeString& append(char ch)
     {
-        data.push_back(ch);
+        data.pushToVector(ch);
         return *this;
     }
 
     void clear() {
         while (data.getSize() > 0) {
-            data.pop_back();
+            data.popBackVector();
         }
 
-        data.pop_back();
+        data.popBackVector();
     }
 
     size_t toHash()

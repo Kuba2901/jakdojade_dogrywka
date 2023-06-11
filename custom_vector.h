@@ -2,120 +2,109 @@
 #include <iostream>
 
 template <typename T>
-class CustomVector
+class JakDojadeVector
 {
 private:
     T *data;
-    size_t capacity;
-    size_t size;
+    size_t vectorCapacity;
+    size_t vectorSize;
 
 public:
-    CustomVector() : data(nullptr), capacity(0), size(0) {}
+    JakDojadeVector() : data(nullptr), vectorCapacity(0), vectorSize(0) {}
 
-    ~CustomVector()
+    void pushToVector(const T &value)
     {
-    }
-
-    void push_back(const T &value)
-    {
-        if (size >= capacity)
+        if (vectorSize >= vectorCapacity)
         {
-            size_t newCapacity = capacity == 0 ? 1 : capacity * 2;
-            reserve(newCapacity);
+            size_t newCapacity = vectorCapacity == 0 ? 1 : vectorCapacity * 2;
+            reserveCapacity(newCapacity);
         }
-        data[size++] = value;
+
+        data[vectorSize++] = value;
     }
 
-    void pop_back()
+    void popBackVector()
     {
-        if (size > 0)
+        if (vectorSize > 0)
         {
-            --size;
+            --vectorSize;
         }
     }
-
+//
     T &operator[](size_t index)
     {
-        if (index >= size)
-        {
-            throw std::out_of_range("Index out of range");
-        }
         return data[index];
     }
 
     const T &operator[](size_t index) const
     {
-        if (index >= size)
-        {
-            throw std::out_of_range("Index out of range");
-        }
         return data[index];
     }
 
     size_t getSize() const
     {
-        return size;
+        return vectorSize;
     }
 
     size_t getCapacity() const
     {
-        return capacity;
+        return vectorCapacity;
     }
 
-    void reserve(size_t newCapacity)
+    void reserveCapacity(size_t newCapacity)
     {
-        if (newCapacity <= capacity)
+        if (newCapacity <= vectorCapacity)
         {
             return;
         }
 
         T *newData = new T[newCapacity];
-        for (size_t i = 0; i < size; ++i)
+        for (size_t i = 0; i < vectorSize; ++i)
         {
             newData[i] = data[i];
         }
 
-//        delete[] data;
+        delete[] data;
         data = newData;
-        capacity = newCapacity;
+        vectorCapacity = newCapacity;
     }
 
     T* getData() {
         return this->data;
     }
 
-    void pop_front()
+    void popFrontVector()
     {
-        if (size > 0)
+        if (vectorSize > 0)
         {
-            for (size_t i = 0; i < size - 1; ++i)
+            for (size_t i = 0; i < vectorSize - 1; ++i)
             {
                 data[i] = data[i + 1];
             }
-            --size;
+
+            // Decrement vector size
+            --vectorSize;
         }
     }
 
-    void resize(size_t newSize)
+    void resizeVector(size_t newSize)
     {
-        if (newSize < size)
+        if (newSize < vectorSize)
         {
-            size = newSize;
+            vectorSize = newSize;
         }
-        else if (newSize > size)
+        else if (newSize > vectorSize)
         {
-            if (newSize > capacity)
+            if (newSize > vectorCapacity)
             {
                 size_t newCapacity = newSize;
-                reserve(newCapacity);
+                reserveCapacity(newCapacity);
             }
-            for (size_t i = size; i < newSize; ++i)
+            for (size_t i = vectorSize; i < newSize; ++i)
             {
-                data[i] = T(); // Initialize new elements with default values
+                data[i] = T();
             }
-            size = newSize;
+            vectorSize = newSize;
         }
     }
-
-
 };

@@ -2,6 +2,7 @@
 #include <iostream>
 #include "linked_list_node.h"
 #include "custom_string.h"
+#include <cstring>
 
 class CityLinkedList {
 public:
@@ -38,7 +39,7 @@ public:
             CityNode *tmp = this->head;
 
             while (tmp != nullptr) {
-                if (!strcmp(tmp->name.c_str(), node->name.c_str())) {
+                if (!strcmp(tmp->name.CStyle(), node->name.CStyle())) {
                     found = true;
 
                     if (tmp->weight > node->weight) {
@@ -67,11 +68,11 @@ public:
         tail = nullptr;
     }
 
-    CityNode* findValue(CustomString name) {
+    CityNode* findValue(JakDojadeString name) {
         CityNode *temp = this->head;
 
         while (temp != nullptr) {
-            if (!strcmp(temp->name.c_str(), name.c_str())) {
+            if (!strcmp(temp->name.CStyle(), name.CStyle())) {
                 return temp;
             }
 
@@ -83,12 +84,12 @@ public:
 
     void print() {
         if (this->head != nullptr) {
-            printf("PRINTING NEIGHBORS OF %s\n", this->head->name.c_str());
+            printf("PRINTING NEIGHBORS OF %s\n", this->head->name.CStyle());
             CityNode* tmp = this->head;
             if (tmp->next != nullptr) tmp = tmp->next;
 
             while (tmp != nullptr) {
-                printf(" - %s at distance: %d\n", tmp->name.c_str(), tmp->weight);
+                printf(" - %s at distance: %d\n", tmp->name.CStyle(), tmp->weight);
                 tmp = tmp->next;
             }
         }
